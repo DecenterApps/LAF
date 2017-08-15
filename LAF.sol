@@ -9,81 +9,110 @@ contract LAF {
         string phone;
         uint prize;
     }
+
+    struct User{
+        bytes[] items;
+        bool isValue;
+    }
     
-    mapping (address => Item) items;
-    
+    mapping (bytes => Item) items;
+    mapping (address => User) users;
+
     event PrizePaid(address founder, uint amount);
-    event ItemFound(address item, address founder);
+    event ItemFound(bytes item, address founder);
     event ItemLost(string name, string email, string phone, uint prize);
     
-    function registerItem(address addr, string name, string email, string phone) returns (bool) {
-        if (items[addr].owner != 0) 
-            return false;
-            
-        items[addr] = Item({
+    function registerItem(bytes hash, string name, string email, string phone) onlyNewItem(hash) returns (bool) {        
+        if (!users[msg.sender].isValue){
+            users[msg.sender] = User({
+                isValue: true,
+                items: new bytes[](0)
+            });   
+        }
+
+        items[hash] = Item({
             owner: msg.sender,
             name: name,
             email: email,
             phone: phone,
             prize: 0
         });
+        users[msg.sender].items.push(hash);
         
         return true;
     }
     
-    function lostItem(address addr) payable returns (bool) {
-        if (items[addr].owner == 0)
-            return false;
-            
-        items[addr].prize = msg.value;
-        ItemLost(items[addr].name, items[addr].email, items[addr].phone, items[addr].prize);
+    function lostItem(bytes hash) payable onlyRegisteredItem(hash) returns (bool) {
+        items[hash].prize = msg.value;
+        ItemLost(items[hash].name, items[hash].email, items[hash].phone, items[hash].prize);
 
         return true;
     }
     
-    function foundItem(address addr) payable returns (bool) {
-        if (items[addr].owner == 0)
-            return false;
-            
-        uint amountToSend = items[addr].prize / 2;
-        items[addr].prize = items[addr].prize - amountToSend;
-        msg.sender.send(amountToSend);
+    function foundItem(bytes hash) payable onlyRegisteredItem(hash) returns (bool) {            
+        uint amountToSend = items[hash].prize / 2;
+        items[hash].prize = items[hash].prize - amountToSend;
+        msg.sender.transfer(amountToSend);
         
-        ItemFound(addr, msg.sender);
+        ItemFound(hash, msg.sender);
         PrizePaid(msg.sender, amountToSend);
         
         return true;
     }
     
-    function confirmFoundItem(address addr) payable returns (bool) {
-        if (items[addr].owner != msg.sender)
-            return false;
-            
-        uint amountToSend = items[addr].prize;
-        items[addr].prize = 0;
-        msg.sender.send(amountToSend);
+    function confirmFoundItem(bytes hash) payable onlyItemOwner(hash) returns (bool) {
+        uint amountToSend = items[hash].prize;
+        items[hash].prize = 0;
+        msg.sender.transfer(amountToSend);
         PrizePaid(msg.sender, amountToSend);
         
         return true;
     }
-    
-    function getItemOwner(address addr) constant returns (address) {
-        return items[addr].owner;
+
+    function getNumberOfItems() constant returns (uint) {
+        return users[msg.sender].items.length;
+    }
+
+    function getItemWithPosition(uint position) constant returns (bytes) {
+        require(position < users[msg.sender].items.length);
+
+        return users[msg.sender].items[position];
     }
     
-    function getItemName(address addr) constant returns (string) {
-        return items[addr].name;
+    function getItemOwner(bytes hash) constant returns (address) {
+        return items[hash].owner;
     }
     
-    function getItemEmail(address addr) constant returns (string) {
-        return items[addr].email;
+    function getItemName(bytes hash) constant returns (string) {
+        return items[hash].name;
     }
     
-    function getItemPhone(address addr) constant returns (string) {
-        return items[addr].phone;
+    function getItemEmail(bytes hash) constant returns (string) {
+        return items[hash].email;
     }
     
-    function getItemPrize(address addr) constant returns (uint) {
-        return items[addr].prize;
+    function getItemPhone(bytes hash) constant returns (string) {
+        return items[hash].phone;
     }
+    
+    function getItemPrize(bytes hash) constant returns (uint) {
+        return items[hash].prize;
+    }
+
+    modifier onlyNewItem(bytes hash) {
+        require(items[hash].owner == 0);
+        _;
+    }
+
+    modifier onlyRegisteredItem(bytes hash) { 
+        require(items[hash].owner != 0);
+        _; 
+    }
+
+    modifier onlyItemOwner(bytes hash) { 
+        require(items[hash].owner == msg.sender);
+        _; 
+    }
+    
+    
 }
