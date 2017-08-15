@@ -7,13 +7,14 @@ contract LAF {
         string name;
         string email;
         string phone;
-        uint value;
+        uint prize;
     }
     
     mapping (address => Item) items;
     
     event PrizePaid(address founder, uint amount);
     event ItemFound(address item, address founder);
+    event ItemLost(string name, string email, string phone, uint prize);
     
     function registerItem(address addr, string name, string email, string phone) returns (bool) {
         if (items[addr].owner != 0) 
@@ -24,7 +25,7 @@ contract LAF {
             name: name,
             email: email,
             phone: phone,
-            value: 0
+            prize: 0
         });
         
         return true;
@@ -34,7 +35,9 @@ contract LAF {
         if (items[addr].owner == 0)
             return false;
             
-        items[addr].value = msg.value;
+        items[addr].prize = msg.value;
+        ItemLost(items[addr].name, items[addr].email, items[addr].phone, items[addr].prize);
+
         return true;
     }
     
@@ -42,8 +45,8 @@ contract LAF {
         if (items[addr].owner == 0)
             return false;
             
-        uint amountToSend = items[addr].value / 2;
-        items[addr].value = items[addr].value - amountToSend;
+        uint amountToSend = items[addr].prize / 2;
+        items[addr].prize = items[addr].prize - amountToSend;
         msg.sender.send(amountToSend);
         
         ItemFound(addr, msg.sender);
@@ -56,8 +59,8 @@ contract LAF {
         if (items[addr].owner != msg.sender)
             return false;
             
-        uint amountToSend = items[addr].value;
-        items[addr].value = 0;
+        uint amountToSend = items[addr].prize;
+        items[addr].prize = 0;
         msg.sender.send(amountToSend);
         PrizePaid(msg.sender, amountToSend);
         
@@ -80,7 +83,7 @@ contract LAF {
         return items[addr].phone;
     }
     
-    function getItemValue(address addr) constant returns (uint) {
-        return items[addr].value;
+    function getItemPrize(address addr) constant returns (uint) {
+        return items[addr].prize;
     }
 }
