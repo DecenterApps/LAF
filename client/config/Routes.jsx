@@ -2,14 +2,24 @@ import { Provider } from 'react-redux';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 import React from 'react';
 import PropTypes from 'prop-types';
-import App from '../components/App/App.jsx';
+import Home from '../components/Home/Home.jsx';
+import ModalRoot from '../components/Modals/ModalRoot';
+import Header from '../components/Header/Header';
+import Dashboard from '../components/Dashboard/Dashboard';
+
 
 const myRouter = ({ store }) => (
   <Provider store={store}>
     <HashRouter>
-      <Switch>
-        <Route exact path="/" component={App} />
-      </Switch>
+      <div>
+        <Header />
+        <ModalRoot />
+
+        <Route path="/dashboard" component={Dashboard} />
+        <Switch>
+          <Route exact path="/" component={Home} />
+        </Switch>
+      </div>
     </HashRouter>
   </Provider>
 );
