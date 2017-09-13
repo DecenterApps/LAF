@@ -12,7 +12,7 @@ class Modal extends PureComponent {
 
   componentWillMount() {
     document.addEventListener('keydown', (event) => {
-      if (event.keyCode === 27) this.props.toggleModal();
+      if (event.keyCode === 27) this.props.closeModal();
     });
   }
 
@@ -29,7 +29,7 @@ class Modal extends PureComponent {
   }
 
   componentWillUnmount() {
-    document.removeEventListener('keydown', this.props.toggleModal);
+    document.removeEventListener('keydown', this.props.closeModal);
   }
 
   render() {
@@ -38,7 +38,7 @@ class Modal extends PureComponent {
         styleName={`modal-backdrop ${this.props.modalOpen ? 'open' : ''}`}
         role="button"
         tabIndex={0}
-        onClick={() => { this.props.toggleModal('', {}, false); }}
+        onClick={() => { this.props.closeModal(); }}
       >
         <div
           role="dialog"
@@ -53,7 +53,7 @@ class Modal extends PureComponent {
 }
 
 Modal.propTypes = {
-  toggleModal: PropTypes.func.isRequired,
+  closeModal: PropTypes.func.isRequired,
   modalOpen: PropTypes.bool.isRequired
 };
 

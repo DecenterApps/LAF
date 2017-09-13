@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "dev-server": "webpack-dev-server --config ./webpack/webpack-dev.config.js --env.eslint",
-    "prod-server": "webpack-dev-server --config ./webpack/webpack-prod.config.js",
+    "prod-server": "webpack-dev-server --config ./webpack/webpack-prod.config.js --env.eslint",
     "prod": "webpack --config ./webpack/webpack-prod.config.js",
 
     "dev-server-no-lint": "webpack-dev-server --config ./webpack/webpack-dev.config.js --env.eslint false",
