@@ -1,81 +1,100 @@
-pragma solidity ^0.4.0;
+pragma solidity ^0.4.16;
 
 contract LAF {
-    
+
     struct Item{
         address owner;
         address founder;
-        string name;
-        string email;
-        string phone;
-        string location;
+        bytes name;
+        bytes email;
+        bytes phone;
+        bytes location;
+        bytes imageUrl;
         uint prize;
     }
 
     struct User{
         bytes[] items;
-        bool isValue;
+        bool exists;
     }
 
     mapping (bytes => Item) items;
     mapping (address => User) users;
 
     event PrizePaid(address founder, uint amount);
-    event ItemFound(bytes item, address founder);
-    event ItemLost(string name, string email, string phone, string location, uint prize);
+    event ItemFound(bytes item, address founder, address owner);
+    event ItemLost(bytes name, bytes email, bytes phone, bytes location, uint prize);
+    event ItemRegistered(address user, bytes name, bytes email, bytes phone, bytes location, bytes imageUrl);
 
-    function registerItem(bytes hash, string name, string email, string phone) onlyNewItem(hash) returns (bool) {
-        if (!users[msg.sender].isValue){
+    modifier onlyNewItem(bytes _hash) {
+        require(items[_hash].owner == 0);
+        _;
+    }
+
+    modifier onlyRegisteredItem(bytes _hash) {
+        require(items[_hash].owner != 0);
+        _;
+    }
+
+    modifier onlyItemOwner(bytes _hash) {
+        require(items[_hash].owner == msg.sender);
+        _;
+    }
+
+    function registerItem(bytes _hash, bytes _name, bytes _email, bytes _phone, bytes _location, bytes _imageUrl) onlyNewItem(_hash) returns (bool) {
+        if (!users[msg.sender].exists){
             users[msg.sender] = User({
-                isValue: true,
+                exists: true,
                 items: new bytes[](0)
             });
         }
 
-        items[hash] = Item({
+        items[_hash] = Item({
             owner: msg.sender,
             founder: 0,
-            name: name,
-            email: email,
-            phone: phone,
-            location: '',
+            name: _name,
+            email: _email,
+            phone: _phone,
+            location: _location,
+            imageUrl: _imageUrl,
             prize: 0
         });
-        users[msg.sender].items.push(hash);
+
+        users[msg.sender].items.push(_hash);
+
+        ItemRegistered(msg.sender, _name, _email, _phone, _location, _imageUrl);
 
         return true;
     }
 
-    function lostItem(bytes hash, string location) payable onlyRegisteredItem(hash) returns (bool) {
-        items[hash].prize = msg.value;
-        ItemLost(items[hash].name, items[hash].email, items[hash].phone, location, items[hash].prize);
+    function lostItem(bytes _hash, bytes _location) payable onlyRegisteredItem(_hash) returns (bool) {
+        items[_hash].prize = msg.value;
+        ItemLost(items[_hash].name, items[_hash].email, items[_hash].phone, _location, items[_hash].prize);
 
         return true;
     }
 
-    function foundItem(bytes hash) payable onlyRegisteredItem(hash) returns (bool) {
-        if (items[hash].founder != 0)
-            return;
+    function foundItem(bytes _hash) onlyRegisteredItem(_hash) returns (bool) {
+        require (items[_hash].founder == 0);
 
-        uint amountToSend = items[hash].prize / 2;
-        items[hash].prize = items[hash].prize - amountToSend;
-        items[hash].founder = msg.sender;
+        uint amountToSend = items[_hash].prize / 2;
+        items[_hash].prize = items[_hash].prize - amountToSend;
+        items[_hash].founder = msg.sender;
         msg.sender.transfer(amountToSend);
 
-        ItemFound(hash, msg.sender);
+        ItemFound(_hash, msg.sender, items[_hash].owner);
         PrizePaid(msg.sender, amountToSend);
 
         return true;
     }
 
-    function confirmFoundItem(bytes hash) payable onlyItemOwner(hash) returns (bool) {
-        if (items[hash].founder == 0)
-            return;
+    function confirmFoundItem(bytes _hash) onlyItemOwner(_hash) returns (bool) {
+        if (items[_hash].founder == 0) return;
 
-        uint amountToSend = items[hash].prize;
-        items[hash].prize = 0;
-        items[hash].founder.transfer(amountToSend);
-        items[hash].founder = 0;
+        uint amountToSend = items[_hash].prize;
+        items[_hash].prize = 0;
+        items[_hash].founder.transfer(amountToSend);
+        items[_hash].founder = 0;
 
         PrizePaid(msg.sender, amountToSend);
 
@@ -86,46 +105,29 @@ contract LAF {
         return users[msg.sender].items.length;
     }
 
-    function getItemWithPosition(uint position) constant returns (bytes) {
-        require(position < users[msg.sender].items.length);
+    function getItemWithPosition(uint _position) constant returns (bytes) {
+        require(_position < users[msg.sender].items.length);
 
-        return users[msg.sender].items[position];
+        return users[msg.sender].items[_position];
     }
 
-    function getItemOwner(bytes hash) constant returns (address) {
-        return items[hash].owner;
+    function getItemOwner(bytes _hash) constant returns (address) {
+        return items[_hash].owner;
     }
 
-    function getItemName(bytes hash) constant returns (string) {
-        return items[hash].name;
+    function getItemName(bytes _hash) constant returns (bytes) {
+        return items[_hash].name;
     }
 
-    function getItemEmail(bytes hash) constant returns (string) {
-        return items[hash].email;
+    function getItemEmail(bytes _hash) constant returns (bytes) {
+        return items[_hash].email;
     }
 
-    function getItemPhone(bytes hash) constant returns (string) {
-        return items[hash].phone;
+    function getItemPhone(bytes _hash) constant returns (bytes) {
+        return items[_hash].phone;
     }
 
-    function getItemPrize(bytes hash) constant returns (uint) {
-        return items[hash].prize;
+    function getItemPrize(bytes _hash) constant returns (uint) {
+        return items[_hash].prize;
     }
-
-    modifier onlyNewItem(bytes hash) {
-        require(items[hash].owner == 0);
-        _;
-    }
-
-    modifier onlyRegisteredItem(bytes hash) {
-        require(items[hash].owner != 0);
-        _;
-    }
-
-    modifier onlyItemOwner(bytes hash) {
-        require(items[hash].owner == msg.sender);
-        _;
-    }
-
-
 }
