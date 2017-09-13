@@ -1,5 +1,4 @@
-$lightRed: #F57170;
-$lightBlue: rgba(71, 163, 217, 0.8);
+@import '../../common-styles/colors';
 
 .form-name {
   font-size: 24px;
@@ -9,8 +8,8 @@ $lightBlue: rgba(71, 163, 217, 0.8);
 
 .form-wrapper {
   width: 100%;
-  max-width: 300px;
   position: relative;
+  margin-top: 20px;
 
   h2 {
     text-align: center;
@@ -20,7 +19,6 @@ $lightBlue: rgba(71, 163, 217, 0.8);
 
   .form-item-wrapper {
     position: relative;
-    margin-top: 35px;
     margin-bottom: 35px;
 
     .form-item {
@@ -50,26 +48,6 @@ $lightBlue: rgba(71, 163, 217, 0.8);
   }
 
   .submit-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
     width: 100%;
-    color: white;
-    background: $lightBlue;
-    padding: 19px 0;
-    font-size: 16px;
-    border-radius: 3px;
-    border: none;
-    cursor: pointer;
-
-    &:hover {
-      background: lighten($lightBlue, 15);
-    }
-
-    &:disabled {
-      user-select: none;
-      cursor: not-allowed;
-      background: lighten($lightBlue, 30);
-    }
   }
 }

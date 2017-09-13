@@ -6,7 +6,9 @@
   }
 
   &:disabled {
-    background-color: lighten($color, 30);
+    user-select: none;
+    cursor: not-allowed;
+    opacity: 0.5;
   }
 }
 
@@ -23,8 +25,8 @@
 
 //COLORS
 .btn {
-  @include button(#21273D);
-  @include hoverAndDisabled(#21273D);
+  @include button(lighten(#21273D, 10));
+  @include hoverAndDisabled(lighten(#21273D, 10));
 }
 
 .btn-orange {
@@ -35,4 +37,8 @@
 //SIZES
 .btn-lg {
   font-size: 1.8rem;
+}
+
+.btn-md {
+  font-size: 1.6rem;
 }

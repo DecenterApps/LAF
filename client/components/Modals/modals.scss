@@ -13,12 +13,11 @@
   .modal {
     position: relative;
     display: inline-block;
-    max-width: 600px;
+    max-width: 500px;
     width: 100%;
     background: #fff;
     margin-top: 0;
     top: 0;
-    border-radius: 3px;
     transform: translateY(0);
     opacity: 0;
     transition: all 0.3s;

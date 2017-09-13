@@ -1,7 +1,7 @@
-/* eslint-disable no-unused-vars */
+/* eslint no-unused-vars: 0 */
 import React from 'react';
 import PropTypes from 'prop-types';
-import is from '../../modules/icon-font.scss';
+import is from '../../common-styles/icon-font.scss';
 import mhs from './modals.scss';
 
 const ModalHeader = ({ closeModal, title }) => (
