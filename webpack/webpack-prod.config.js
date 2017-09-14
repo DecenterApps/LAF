@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const CleanPlugin = require('clean-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 
 const context = path.resolve(__dirname, '../client');
 
@@ -63,7 +64,7 @@ const config = {
           {
             loader: 'babel-loader',
             query: {
-              presets: ['es2015', 'react'],
+              presets: ['es2017', 'react'],
               plugins: [
                 'transform-object-rest-spread',
                 'transform-react-jsx',
@@ -129,7 +130,11 @@ const config = {
     new CleanPlugin([path.resolve('dist')], { root: path.resolve(__dirname, '../') }),
     HtmlWebpackPluginConfig,
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.UglifyJsPlugin({
+    new UglifyJSPlugin({
+      parallel: {
+        cache: true,
+        workers: 2 // for e.g
+      },
       compress: {
         warnings: false,
       },
