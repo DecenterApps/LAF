@@ -1,12 +1,12 @@
 import { routerReducer } from 'react-router-redux';
 import { combineReducers } from 'redux';
 import { reducer as formReducer } from 'redux-form';
-import counterReducer from './counterReducer';
 import modalsReducer from './modalsReducer';
+import itemsReducer from './itemsReducer';
 
 export default combineReducers({
   routing: routerReducer,
-  counter: counterReducer,
   modals: modalsReducer,
-  form: formReducer
+  form: formReducer,
+  items: itemsReducer
 });

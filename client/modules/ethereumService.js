@@ -8,30 +8,11 @@ const networkIds = {
   kovan: '42',
 };
 
-let contractName;
+let lafContract;
 
 window.onload = () => {
-  contractName = web3.eth.contract(contract.abi).at(contract.contractAddress);
+  lafContract = web3.eth.contract(contract.abi).at(contract.contractAddress);
 };
-
-export const getWeb3Status = () =>
-  new Promise((resolve, reject) => {
-    if (!web3) {
-      return reject({
-        message: 'NOT_FOUND',
-      });
-    }
-
-    return web3.version.getNetwork((err, netId) => {
-      if (netId.toString() !== networkIds.kovan) {
-        return reject({
-          message: 'WRONG_NETWORK',
-        });
-      }
-
-      return resolve();
-    });
-  });
 
 export const getAccount = () => {
   if (!web3.eth.accounts || !web3.eth.accounts.length) { return false; }
@@ -49,3 +30,43 @@ export const getBlockNumber = () =>
       return resolve(latestBlock);
     });
   });
+
+/* Contract functions (prefixed by "_") */
+
+export const _addItem = (item) =>
+  new Promise((resolve, reject) => {
+    lafContract.registerItem(
+      item.hash, item.name, item.email, item.phoneNumber, item.location, item.imageUrl,
+      (error, result) => {
+        if (error) {
+          return reject({
+            message: error,
+          });
+        }
+
+        return resolve(result);
+      });
+  });
+
+/* Events */
+
+export const registerItemEvent = async (callback) => {
+  let latestBlock = 0;
+
+  try {
+    latestBlock = await getBlockNumber();
+  } catch (err) {
+    return callback(err, null);
+  }
+
+  lafContract.ItemRegistered({}, { fromBlock: latestBlock, toBlock: 'latest' })
+    .watch((error, event) => {
+      if (error) {
+        return callback(error, null);
+      }
+
+      return callback(null, event);
+    });
+
+  return true;
+};

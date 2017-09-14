@@ -7,19 +7,23 @@ const checkModalType = (modalType) => {
   }
 };
 
-const toggleModal = (modalType, modalProps, action) => (dispatch) => {
+const toggleModal = (modalType, modalProps, action, onCloseFunc) => (dispatch) => {
   dispatch({
     type: TOGGLE_MODAL,
-    payload: { action, modalType, modalProps }
+    payload: { action, modalType, modalProps, onCloseFunc }
   });
 };
 
-export const openModal = (modalType, modalProps) => (dispatch) => {
+export const openModal = (modalType, modalProps, onCloseFunc) => (dispatch) => {
   checkModalType(modalType);
-  dispatch(toggleModal(modalType, modalProps, true));
+  dispatch(toggleModal(modalType, modalProps, true, onCloseFunc));
 };
 
-export const closeModal = () => (dispatch) => {
+export const closeModal = () => (dispatch, getState) => {
+  if (getState().modals.onCloseFunc !== null) {
+    dispatch(getState().modals.onCloseFunc());
+  }
+
   dispatch(toggleModal('', {}, false));
 };
 

@@ -2,7 +2,8 @@ import { TOGGLE_MODAL } from '../actions/types';
 
 const INITIAL_STATE = {
   modalType: '',
-  modalProps: {}
+  modalProps: {},
+  onCloseFunc: null
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -18,7 +19,8 @@ export default (state = INITIAL_STATE, action) => {
 
       return {
         modalType: payload.modalType,
-        modalProps: payload.modalProps
+        modalProps: payload.modalProps,
+        onCloseFunc: payload.onCloseFunc
       };
     }
 
