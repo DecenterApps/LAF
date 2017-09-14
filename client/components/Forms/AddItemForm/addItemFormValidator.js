@@ -12,7 +12,7 @@ const addItemFormValidator = (values) => {
 
   if (values.imageUrl && !isUriImage(values.imageUrl)) errors.imageUrl = 'Url does not contain valid image extension';
   if (values.email && !isValidEmail(values.email)) errors.email = 'Email address is not valid';
-  if (values.phone && !isValidPhoneNumber(values.phone)) errors.phone = 'Email address is not valid';
+  if (values.phone && !isValidPhoneNumber(values.phone)) errors.phone = 'Phone number is not valid';
 
   return errors;
 };

@@ -99,7 +99,7 @@ AddItemForm.propTypes = {
   invalid: PropTypes.bool.isRequired
 };
 
-AddItemForm = reduxForm({ form: 'exampleForm', validate: addItemFormValidator })(AddItemForm);
+AddItemForm = reduxForm({ form: 'addItemForm', validate: addItemFormValidator })(AddItemForm);
 
 const mapStateToProps = (state) => ({
   submitFormError: state.items.addingItemError

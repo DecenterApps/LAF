@@ -10,7 +10,7 @@ const networkIds = {
 
 let lafContract;
 
-export const itemProps = ['Name', 'Email', 'Phone', 'Prize', 'Location', 'ImageUrl'];
+export const itemProps = ['Founder', 'Name', 'Email', 'Phone', 'Prize', 'Location', 'ImageUrl'];
 
 window.onload = () => {
   lafContract = web3.eth.contract(contract.abi).at(contract.contractAddress);
@@ -82,6 +82,22 @@ export const _addItem = (item) =>
   new Promise((resolve, reject) => {
     lafContract.registerItem(
       item.hash, item.name, item.email, item.phone, item.location, item.imageUrl,
+      (error, result) => {
+        if (error) {
+          return reject({
+            message: error,
+          });
+        }
+
+        return resolve(result);
+      });
+  });
+
+export const _lostItem = (hash, prize) =>
+  new Promise((resolve, reject) => {
+    lafContract.lostItem(
+      hash,
+      { value: web3.toWei(prize, 'ether') },
       (error, result) => {
         if (error) {
           return reject({

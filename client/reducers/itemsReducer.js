@@ -1,12 +1,16 @@
 import {
-  ADD_ITEM, ADD_ITEM_SUCCESS, ADD_ITEM_ERROR, ADD_ITEM_RESET, USER_ITEM_ADDED, USER_ITEMS_ADDED
+  ADD_ITEM, ADD_ITEM_SUCCESS, ADD_ITEM_ERROR, ADD_ITEM_RESET, USER_ITEM_ADDED, USER_ITEMS_ADDED,
+  REPORT_LOST, REPORT_LOST_SUCCESS, REPORT_LOST_ERROR, REPORT_LOST_RESET
 } from '../actions/types';
 
 const INITIAL_STATE = {
+  emptyAddress: '0x0000000000000000000000000000000000000000',
   loadingUserItems: true,
   addingItem: false,
   addingItemError: '',
-  userItems: []
+  userItems: [],
+  reportingLostError: '',
+  reportingLost: false
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -34,8 +38,29 @@ export default (state = INITIAL_STATE, action) => {
       };
     }
 
+    case REPORT_LOST: {
+      return { ...state, reportingLost: true };
+    }
+
+    case REPORT_LOST_SUCCESS:
+    case REPORT_LOST_RESET: {
+      return {
+        ...state,
+        reportingLost: false,
+        reportingLostError: ''
+      };
+    }
+
+    case REPORT_LOST_ERROR: {
+      return {
+        ...state,
+        reportingLost: false,
+        reportingLostError: 'Error occurred while reporting lost item.'
+      };
+    }
+
     case USER_ITEM_ADDED: {
-      return { ...state, userItems: [payload, ...state.userItems], };
+      return { ...state, userItems: [payload, ...state.userItems] };
     }
 
     case USER_ITEMS_ADDED: {

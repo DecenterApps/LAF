@@ -4,7 +4,7 @@ import ModalHeader from '../ModalHeader';
 import ModalBody from '../ModalBody';
 import AddItemForm from '../../Forms/AddItemForm/AddItemForm';
 
-const ExampleModal = ({ closeModal }) => (
+const AddItemModal = ({ closeModal }) => (
   <div>
     <ModalHeader title={'Add Item'} closeModal={closeModal} />
 
@@ -14,8 +14,8 @@ const ExampleModal = ({ closeModal }) => (
   </div>
 );
 
-ExampleModal.propTypes = {
+AddItemModal.propTypes = {
   closeModal: PropTypes.func.isRequired
 };
 
-export default ExampleModal;
+export default AddItemModal;

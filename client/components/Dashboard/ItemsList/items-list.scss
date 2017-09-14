@@ -1,4 +1,5 @@
 @import '../../../common-styles/utils';
+@import '../../../common-styles/colors';
 
 .items-list-wrapper {
   width: 100%;
@@ -30,15 +31,28 @@
       display: inline-flex;
       border: 1px solid #e2e9e6;
       flex-direction: column;
-      max-width: 250px;
+      max-width: 300px;
       margin-bottom: 20px;
+      position: relative;
+
+      .status-ribbon {
+        color: white;
+        width: 100%;
+        text-align: center;
+
+        .lost {
+          display: block;
+          width: 100%;
+          padding: 10px 0;
+          background: $dark-red;
+        }
+      }
 
       .image-wrapper {
         background: black;
         height: 300px;
         width: 100%;
-        display: flex;
-        align-items: center;
+        @include flex-center;
 
         img {
           max-height:100%;
@@ -65,6 +79,10 @@
             @include ellipsis();
           }
         }
+      }
+
+      .report-lost-button {
+        font-size: 1.6rem;
       }
     }
   }

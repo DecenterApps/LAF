@@ -3,19 +3,19 @@ pragma solidity ^0.4.16;
 contract LAF {
 
     struct Item{
-    address owner;
-    address founder;
-    bytes name;
-    bytes email;
-    bytes phone;
-    bytes location;
-    bytes imageUrl;
-    uint prize;
+        address owner;
+        address founder;
+        bytes name;
+        bytes email;
+        bytes phone;
+        bytes location;
+        bytes imageUrl;
+        uint prize;
     }
 
     struct User{
-    bytes[] items;
-    bool exists;
+        bytes[] items;
+        bool exists;
     }
 
     mapping (bytes => Item) items;
@@ -23,8 +23,8 @@ contract LAF {
 
     event PrizePaid(address founder, uint amount);
     event ItemFound(bytes item, address founder, address owner);
-    event ItemLost(bytes name, bytes email, bytes phone, bytes location, uint prize);
-    event ItemRegistered(address user, bytes name, bytes email, bytes phone, bytes location, bytes imageUrl);
+    event ItemLost(bytes hash, bytes name, bytes location, bytes imageUrl, uint prize);
+    event ItemRegistered(bytes hash, address user, bytes name, bytes email, bytes phone, bytes location, bytes imageUrl);
 
     modifier onlyNewItem(bytes _hash) {
         require(items[_hash].owner == 0);
@@ -45,32 +45,32 @@ contract LAF {
         if (!users[msg.sender].exists){
             bytes[] emptyArr;
             users[msg.sender] = User({
-            items: emptyArr,
-            exists: true
+                items: emptyArr,
+                exists: true
             });
         }
 
         items[_hash] = Item({
-        owner: msg.sender,
-        founder: 0,
-        name: _name,
-        email: _email,
-        phone: _phone,
-        location: _location,
-        imageUrl: _imageUrl,
-        prize: 0
+            owner: msg.sender,
+            founder: 0,
+            name: _name,
+            email: _email,
+            phone: _phone,
+            location: _location,
+            imageUrl: _imageUrl,
+            prize: 0
         });
 
         users[msg.sender].items.push(_hash);
 
-        ItemRegistered(msg.sender, _name, _email, _phone, _location, _imageUrl);
+        ItemRegistered(_hash, msg.sender, _name, _email, _phone, _location, _imageUrl);
 
         return true;
     }
 
-    function lostItem(bytes _hash, bytes _location) payable onlyRegisteredItem(_hash) returns (bool) {
+    function lostItem(bytes _hash) payable onlyRegisteredItem(_hash) returns (bool) {
         items[_hash].prize = msg.value;
-        ItemLost(items[_hash].name, items[_hash].email, items[_hash].phone, _location, items[_hash].prize);
+        ItemLost(_hash, items[_hash].name, items[_hash].location, items[_hash].imageUrl, items[_hash].prize);
 
         return true;
     }
@@ -132,11 +132,15 @@ contract LAF {
         return items[_hash].prize;
     }
 
-    function getItemLocation(bytes _hash) constant returns (uint) {
+    function getItemLocation(bytes _hash) constant returns (bytes) {
         return items[_hash].location;
     }
 
-    function getItemImageUrl(bytes _hash) constant returns (uint) {
+    function getItemFounder(bytes _hash) constant returns (address) {
+        return items[_hash].founder;
+    }
+
+    function getItemImageUrl(bytes _hash) constant returns (bytes) {
         return items[_hash].imageUrl;
     }
 }
