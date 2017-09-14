@@ -1,5 +1,5 @@
 import {
-  ADD_ITEM, ADD_ITEM_SUCCESS, ADD_ITEM_ERROR, ADD_ITEM_RESET, USER_ITEM_ADDED
+  ADD_ITEM, ADD_ITEM_SUCCESS, ADD_ITEM_ERROR, ADD_ITEM_RESET, USER_ITEM_ADDED, USER_ITEMS_ADDED
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -35,6 +35,10 @@ export default (state = INITIAL_STATE, action) => {
 
     case USER_ITEM_ADDED: {
       return { ...state, userItems: [payload, ...state.userItems], };
+    }
+
+    case USER_ITEMS_ADDED: {
+      return { ...state, userItems: payload, };
     }
 
     default:

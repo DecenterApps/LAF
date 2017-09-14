@@ -1,0 +1,40 @@
+.items-list-wrapper {
+  width: 100%;
+  height: calc(100vh - 210px);
+  overflow: auto;
+
+  .items {
+    padding: 50px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+
+    .item {
+      margin-right: 50px;
+      display: inline-flex;
+      border: 1px solid #e2e9e6;
+      flex-direction: column;
+      max-width: 250px;
+      margin-bottom: 20px;
+
+      .image-wrapper {
+        background: black;
+        height: 300px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+
+        img {
+          max-height:100%;
+          max-width:100%;
+        }
+      }
+
+      .data-wrapper {
+        flex-direction: column;
+        padding: 15px;
+      }
+    }
+  }
+}

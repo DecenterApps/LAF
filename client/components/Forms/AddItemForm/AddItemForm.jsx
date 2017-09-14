@@ -68,7 +68,7 @@ let AddItemForm = ({ handleSubmit, pristine, invalid, submitFormError }) => (
     />
 
     <Field
-      name="phoneNumber"
+      name="phone"
       showErrorText
       component={InputComponent}
       placeholder="Your phone number"

@@ -3,19 +3,19 @@ pragma solidity ^0.4.16;
 contract LAF {
 
     struct Item{
-        address owner;
-        address founder;
-        bytes name;
-        bytes email;
-        bytes phone;
-        bytes location;
-        bytes imageUrl;
-        uint prize;
+    address owner;
+    address founder;
+    bytes name;
+    bytes email;
+    bytes phone;
+    bytes location;
+    bytes imageUrl;
+    uint prize;
     }
 
     struct User{
-        bytes[] items;
-        bool exists;
+    bytes[] items;
+    bool exists;
     }
 
     mapping (bytes => Item) items;
@@ -43,21 +43,22 @@ contract LAF {
 
     function registerItem(bytes _hash, bytes _name, bytes _email, bytes _phone, bytes _location, bytes _imageUrl) onlyNewItem(_hash) returns (bool) {
         if (!users[msg.sender].exists){
+            bytes[] emptyArr;
             users[msg.sender] = User({
-                exists: true,
-                items: new bytes[](0)
+            items: emptyArr,
+            exists: true
             });
         }
 
         items[_hash] = Item({
-            owner: msg.sender,
-            founder: 0,
-            name: _name,
-            email: _email,
-            phone: _phone,
-            location: _location,
-            imageUrl: _imageUrl,
-            prize: 0
+        owner: msg.sender,
+        founder: 0,
+        name: _name,
+        email: _email,
+        phone: _phone,
+        location: _location,
+        imageUrl: _imageUrl,
+        prize: 0
         });
 
         users[msg.sender].items.push(_hash);
@@ -129,5 +130,13 @@ contract LAF {
 
     function getItemPrize(bytes _hash) constant returns (uint) {
         return items[_hash].prize;
+    }
+
+    function getItemLocation(bytes _hash) constant returns (uint) {
+        return items[_hash].location;
+    }
+
+    function getItemImageUrl(bytes _hash) constant returns (uint) {
+        return items[_hash].imageUrl;
     }
 }

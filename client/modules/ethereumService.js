@@ -10,6 +10,8 @@ const networkIds = {
 
 let lafContract;
 
+export const itemProps = ['Name', 'Email', 'Phone', 'Prize', 'Location', 'ImageUrl'];
+
 window.onload = () => {
   lafContract = web3.eth.contract(contract.abi).at(contract.contractAddress);
 };
@@ -31,12 +33,55 @@ export const getBlockNumber = () =>
     });
   });
 
+export const getUserItems = (callback) => {
+  new Promise((resolve, reject) => {
+
+  });
+};
+
+export const getNumberOfItems = () =>
+  new Promise((resolve, reject) => {
+    lafContract.getNumberOfItems(
+      (error, result) => {
+        if (error) {
+          return reject({
+            message: error,
+          });
+        }
+
+        return resolve(result);
+      });
+  });
+
+export const getItemProp = (prop, hash) =>
+  new Promise((resolve, reject) => {
+    const func = lafContract[`getItem${prop}`];
+    func(
+      hash,
+      (error, result) => {
+        if (error) return reject(error);
+
+        return resolve(result);
+      });
+  });
+
+export const getItemWithPosition = (position) =>
+  new Promise((resolve, reject) => {
+    lafContract.getItemWithPosition(
+      position,
+      (error, result) => {
+        if (error) return reject(error);
+
+        return resolve(result);
+      });
+  });
+
 /* Contract functions (prefixed by "_") */
 
 export const _addItem = (item) =>
   new Promise((resolve, reject) => {
     lafContract.registerItem(
-      item.hash, item.name, item.email, item.phoneNumber, item.location, item.imageUrl,
+      item.hash, item.name, item.email, item.phone, item.location, item.imageUrl,
       (error, result) => {
         if (error) {
           return reject({
