@@ -3,6 +3,7 @@ import {
 } from '../actions/types';
 
 const INITIAL_STATE = {
+  loadingUserItems: true,
   addingItem: false,
   addingItemError: '',
   userItems: []
@@ -38,7 +39,7 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case USER_ITEMS_ADDED: {
-      return { ...state, userItems: payload, };
+      return { ...state, userItems: payload, loadingUserItems: false };
     }
 
     default:
