@@ -15,3 +15,4 @@ export const REPORT_LOST = 'report_lost';
 export const REPORT_LOST_SUCCESS = 'report_lost_success';
 export const REPORT_LOST_ERROR = 'report_lost_error';
 export const REPORT_LOST_RESET = 'report_lost_reset';
+export const LOST_ITEM_ADDED = 'lost_item_added';

@@ -1,11 +1,12 @@
 /* eslint-disable */
+import { findIndex } from 'lodash';
 import {
   ADD_ITEM, ADD_ITEM_SUCCESS, ADD_ITEM_ERROR, ADD_ITEM_RESET, USER_ITEM_ADDED, USER_ITEMS_ADDED,
-  REPORT_LOST, REPORT_LOST_SUCCESS, REPORT_LOST_ERROR, REPORT_LOST_RESET
+  REPORT_LOST, REPORT_LOST_SUCCESS, REPORT_LOST_ERROR, REPORT_LOST_RESET, LOST_ITEM_ADDED
 } from './types';
 import {
   _addItem, registerItemEvent, getAccount, getNumberOfItems, getItemWithPosition,
-  itemProps, getItemProp, _lostItem
+  itemProps, getItemProp, _lostItem, itemLostEvent
 } from '../modules/ethereumService';
 import { formatLargeNumber } from '../modules/utils';
 import { closeModal } from './modalsActions';
@@ -47,7 +48,7 @@ export const reportLostItem = (values) => async (dispatch, getState) => {
   }
 };
 
-export const registerItemEventListener = () => (dispatch) => {
+export const registerItemEventListener = () => (dispatch, getState) => {
   registerItemEvent((err, data) => {
     if (err) return;
     if (getAccount() !== data.args.user) return; // change to get from state
@@ -69,8 +70,34 @@ export const registerItemEventListener = () => (dispatch) => {
       item[prop] = value;
     }
 
-    console.log('USER REGISTERED ITEM', data, args, item);
+    // new item can't be lost
+    item.prize = "0";
+    item.founder = getState().items.emptyAddress;
+
+    console.log('USER REGISTERED ITEM', args, item);
     dispatch({ type: USER_ITEM_ADDED, payload: item });
+  });
+};
+
+export const itemLostEventListener = () => (dispatch, getState) => {
+  itemLostEvent((err, data) => {
+    if (err) return;
+    if (getAccount() !== data.args.user) return; // change to get from state
+
+    let currentUserItems = [...getState().items.userItems];
+
+    const args = data.args;
+
+    const prize =  formatLargeNumber(parseFloat(web3.fromWei(data.args['prize'].toString())));
+    const hash = args['hash'];
+    const index = findIndex(currentUserItems, { hash });
+    let item = currentUserItems[index];
+
+    item.prize = prize;
+
+    currentUserItems.splice(index, 1, item);
+
+    dispatch({ type: LOST_ITEM_ADDED, payload: currentUserItems })
   });
 };
 

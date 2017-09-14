@@ -23,7 +23,7 @@ contract LAF {
 
     event PrizePaid(address founder, uint amount);
     event ItemFound(bytes item, address founder, address owner);
-    event ItemLost(bytes hash, bytes name, bytes location, bytes imageUrl, uint prize);
+    event ItemLost(bytes hash, address user, bytes name, bytes location, bytes imageUrl, uint prize);
     event ItemRegistered(bytes hash, address user, bytes name, bytes email, bytes phone, bytes location, bytes imageUrl);
 
     modifier onlyNewItem(bytes _hash) {
@@ -70,7 +70,7 @@ contract LAF {
 
     function lostItem(bytes _hash) payable onlyRegisteredItem(_hash) returns (bool) {
         items[_hash].prize = msg.value;
-        ItemLost(_hash, items[_hash].name, items[_hash].location, items[_hash].imageUrl, items[_hash].prize);
+        ItemLost(_hash, items[_hash].owner, items[_hash].name, items[_hash].location, items[_hash].imageUrl, items[_hash].prize);
 
         return true;
     }

@@ -131,3 +131,24 @@ export const registerItemEvent = async (callback) => {
 
   return true;
 };
+
+export const itemLostEvent = async (callback) => {
+  let latestBlock = 0;
+
+  try {
+    latestBlock = await getBlockNumber();
+  } catch (err) {
+    return callback(err, null);
+  }
+
+  lafContract.ItemLost({}, { fromBlock: latestBlock, toBlock: 'latest' })
+    .watch((error, event) => {
+      if (error) {
+        return callback(error, null);
+      }
+
+      return callback(null, event);
+    });
+
+  return true;
+};

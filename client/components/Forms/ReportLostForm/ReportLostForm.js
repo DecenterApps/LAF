@@ -22,11 +22,6 @@ let ReportLostForm = ({ handleSubmit, pristine, invalid, submitFormError, hash }
       inputClassName={formStyle['form-item']}
       errorClassName={formStyle['form-item-error']}
     />
-
-    {
-      hash && <h1>HASH: {hash}</h1>
-    }
-
     {
       submitFormError && <div styleName="formStyle.submit-error">{ submitFormError }</div>
     }
@@ -41,12 +36,16 @@ let ReportLostForm = ({ handleSubmit, pristine, invalid, submitFormError, hash }
   </form>
 );
 
+ReportLostForm.defaultProps = {
+  hash: ''
+};
+
 ReportLostForm.propTypes = {
   submitFormError: PropTypes.string.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   pristine: PropTypes.bool.isRequired,
   invalid: PropTypes.bool.isRequired,
-  hash: PropTypes.string.isRequired
+  hash: PropTypes.string
 };
 
 ReportLostForm = reduxForm({ form: 'reportLostForm', validate: reportLostFormValidator })(ReportLostForm);

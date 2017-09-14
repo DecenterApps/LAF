@@ -40,12 +40,13 @@
         width: 100%;
         text-align: center;
 
-        .lost {
+        span {
           display: block;
           width: 100%;
           padding: 10px 0;
-          background: $dark-red;
         }
+
+        .lost {  background: $dark-red;  }
       }
 
       .image-wrapper {

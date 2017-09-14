@@ -75,10 +75,8 @@ const ItemsList = ({ userItems, loadingUserItems, emptyAddress, $openModal }) =>
                   <span>{ item.phone }</span>
                 </span>
                 {
-                  item.prize &&
-                  <span>
-                    Prize: { item.prize } ETH
-                  </span>
+                  item.prize !== '0' &&
+                  <span>Prize: { item.prize } ETH</span>
                 }
               </div>
 

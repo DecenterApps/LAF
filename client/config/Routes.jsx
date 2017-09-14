@@ -6,11 +6,12 @@ import Home from '../components/Home/Home.jsx';
 import ModalRoot from '../components/Modals/ModalRoot';
 import Header from '../components/Header/Header';
 import Dashboard from '../components/Dashboard/Dashboard';
-import { registerItemEventListener, getAllUserItems } from '../actions/itemsActions';
+import { registerItemEventListener, getAllUserItems, itemLostEventListener } from '../actions/itemsActions';
 
 class myRouter extends Component {
   componentWillMount() {
     this.props.store.dispatch(registerItemEventListener());
+    this.props.store.dispatch(itemLostEventListener());
     this.props.store.dispatch(getAllUserItems());
   }
 
