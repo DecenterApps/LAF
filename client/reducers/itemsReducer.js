@@ -16,7 +16,8 @@ const INITIAL_STATE = {
   findingItem: false,
   findingItemError: '',
   confirmingFound: false,
-  confirmingFoundError: ''
+  confirmingFoundError: '',
+  confirmingFoundErrorHash: ''
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -115,6 +116,7 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         confirmingFound: false,
+        confirmingFoundErrorHash: payload,
         confirmingFoundError: 'Error occurred while confirming found item.'
       };
     }

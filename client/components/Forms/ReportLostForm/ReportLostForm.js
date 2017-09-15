@@ -6,11 +6,14 @@ import PropTypes from 'prop-types';
 import InputComponent from '../InputComponent';
 import reportLostFormValidator from './reportLostFormValidator';
 import { reportLostItem } from '../../../actions/reportActions';
+import CircleLoader from '../../Decorative/CircleLoader/CircleLoader';
 
 import formStyle from '../forms.scss';
 import btn from '../../../common-styles/buttons.scss';
 
-let ReportLostForm = ({ handleSubmit, pristine, invalid, submitFormError, hash }) => (
+let ReportLostForm = ({
+  handleSubmit, pristine, invalid, submitFormError, hash, submittingForm
+}) => (
   <form onSubmit={handleSubmit} styleName="formStyle.form-wrapper">
     <Field
       name="prize"
@@ -30,9 +33,12 @@ let ReportLostForm = ({ handleSubmit, pristine, invalid, submitFormError, hash }
     <button
       styleName="btn.btn btn.btn-md formStyle.submit-button"
       type="submit"
-      disabled={pristine || invalid}
+      disabled={pristine || invalid || submittingForm}
     >
-      Submit
+      {
+        submittingForm && <span styleName="formStyle.loader-wrapper"><CircleLoader /></span>
+      }
+      <span>{ submittingForm ? 'Submitting' : 'Submit' }</span>
     </button>
   </form>
 );
@@ -46,13 +52,15 @@ ReportLostForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
   pristine: PropTypes.bool.isRequired,
   invalid: PropTypes.bool.isRequired,
-  hash: PropTypes.string
+  hash: PropTypes.string,
+  submittingForm: PropTypes.bool.isRequired
 };
 
 ReportLostForm = reduxForm({ form: 'reportLostForm', validate: reportLostFormValidator })(ReportLostForm);
 
 const mapStateToProps = (state) => ({
   submitFormError: state.items.reportingLostError,
+  submittingForm: state.items.reportingLost,
   hash: state.modals.modalProps.hash
 });
 

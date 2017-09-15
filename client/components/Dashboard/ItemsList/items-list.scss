@@ -32,6 +32,7 @@
       border: 1px solid #e2e9e6;
       flex-direction: column;
       max-width: 300px;
+      width: 100%;
       margin-bottom: 20px;
       position: relative;
 
@@ -92,6 +93,10 @@
         text-align: center;
         font-size: 1.8rem;
         margin-bottom: 15px;
+      }
+
+      .loader-wrapper {
+        margin-right: 15px;
       }
     }
   }

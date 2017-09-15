@@ -7,13 +7,15 @@ import BigBlockLoader from '../../Decorative/BigBlockLoader/BigBlockLoader';
 import { openModal, resetReportLostForm } from '../../../actions/modalsActions';
 import { REPORT_LOST_MODAL } from '../../Modals/modalTypes';
 import { confirmFoundItem } from '../../../actions/reportActions';
+import CircleLoader from '../../Decorative/CircleLoader/CircleLoader';
 
 import ils from './items-list.scss';
 import is from '../../../common-styles/icon-font.scss';
 import btn from '../../../common-styles/buttons.scss';
 
 const ItemsList = ({
-  userItems, loadingUserItems, emptyAddress, $openModal, $confirmFoundItem, confirmingFoundError
+  userItems, loadingUserItems, emptyAddress, $openModal, $confirmFoundItem, confirmingFoundError,
+  confirmingFound, confirmingFoundErrorHash
 }) => (
   <div styleName={`ils.items-list-wrapper ${loadingUserItems || !userItems.length ? 'ils.center' : ''}`}>
 
@@ -97,16 +99,21 @@ const ItemsList = ({
 
               {
                 confirmingFoundError &&
+                (confirmingFoundErrorHash === item.hash) &&
                 <div styleName="ils.finding-item-error">{ confirmingFoundError }</div>
               }
 
               {
                 item.prize !== '0' && (item.founder !== emptyAddress) &&
                 <button
+                  disabled={confirmingFound}
                   styleName="btn.btn ils.report-lost-button"
                   onClick={() => { $confirmFoundItem(item.hash); }}
                 >
-                  Payout prize
+                  { confirmingFound &&
+                    <span styleName="ils.loader-wrapper"><CircleLoader /></span>
+                  }
+                  <span>{ confirmingFound ? 'Paying out' : 'Payout' } prize</span>
                 </button>
               }
             </div>
@@ -123,14 +130,18 @@ ItemsList.propTypes = {
   emptyAddress: PropTypes.string.isRequired,
   $openModal: PropTypes.func.isRequired,
   $confirmFoundItem: PropTypes.func.isRequired,
-  confirmingFoundError: PropTypes.string.isRequired
+  confirmingFoundError: PropTypes.string.isRequired,
+  confirmingFoundErrorHash: PropTypes.string.isRequired,
+  confirmingFound: PropTypes.bool.isRequired
 };
 
 const mapStateToProps = (state) => ({
   userItems: state.items.userItems,
   loadingUserItems: state.items.loadingUserItems,
   emptyAddress: state.items.emptyAddress,
-  confirmingFoundError: state.items.confirmingFoundError
+  confirmingFoundError: state.items.confirmingFoundError,
+  confirmingFound: state.items.confirmingFound,
+  confirmingFoundErrorHash: state.items.confirmingFoundErrorHash
 });
 
 const mapDispatchToProps = {

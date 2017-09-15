@@ -6,11 +6,12 @@ import PropTypes from 'prop-types';
 import InputComponent from '../InputComponent';
 import addItemFormValidator from './addItemFormValidator';
 import { addItem } from '../../../actions/reportActions';
+import CircleLoader from '../../Decorative/CircleLoader/CircleLoader';
 
 import formStyle from '../forms.scss';
 import btn from '../../../common-styles/buttons.scss';
 
-let AddItemForm = ({ handleSubmit, pristine, invalid, submitFormError }) => (
+let AddItemForm = ({ handleSubmit, pristine, invalid, submitFormError, submittingForm }) => (
   <form onSubmit={handleSubmit} styleName="formStyle.form-wrapper">
     <Field
       name="hash"
@@ -85,9 +86,12 @@ let AddItemForm = ({ handleSubmit, pristine, invalid, submitFormError }) => (
     <button
       styleName="btn.btn btn.btn-md formStyle.submit-button"
       type="submit"
-      disabled={pristine || invalid}
+      disabled={pristine || invalid || submittingForm}
     >
-      Submit
+      {
+        submittingForm && <span styleName="formStyle.loader-wrapper"><CircleLoader /></span>
+      }
+      <span>{ submittingForm ? 'Submitting' : 'Submit' }</span>
     </button>
   </form>
 );
@@ -96,13 +100,15 @@ AddItemForm.propTypes = {
   submitFormError: PropTypes.string.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   pristine: PropTypes.bool.isRequired,
-  invalid: PropTypes.bool.isRequired
+  invalid: PropTypes.bool.isRequired,
+  submittingForm: PropTypes.bool.isRequired
 };
 
 AddItemForm = reduxForm({ form: 'addItemForm', validate: addItemFormValidator })(AddItemForm);
 
 const mapStateToProps = (state) => ({
-  submitFormError: state.items.addingItemError
+  submitFormError: state.items.addingItemError,
+  submittingForm: state.items.addingItem
 });
 
 const mapDispatchToProps = {

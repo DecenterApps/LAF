@@ -79,6 +79,6 @@ export const confirmFoundItem = (hash) => async (dispatch) => {
     await _confirmFoundItem(hash);
     dispatch({ type: CONFIRM_FOUND_SUCCESS });
   } catch (err) {
-    dispatch({ type: CONFIRM_FOUND_ERROR });
+    dispatch({ type: CONFIRM_FOUND_ERROR, payload: hash });
   }
 };
