@@ -1,7 +1,8 @@
 import {
   ADD_ITEM, ADD_ITEM_SUCCESS, ADD_ITEM_ERROR, ADD_ITEM_RESET, USER_ITEM_ADDED, USER_ITEMS_ADDED,
   REPORT_LOST, REPORT_LOST_SUCCESS, REPORT_LOST_ERROR, REPORT_LOST_RESET, LOST_ITEM_ADDED,
-  REPORT_FOUND, REPORT_FOUND_SUCCESS, REPORT_FOUND_ERROR, FOUND_ITEM_ADDED
+  REPORT_FOUND, REPORT_FOUND_SUCCESS, REPORT_FOUND_ERROR, FOUND_ITEM_ADDED,
+  CONFIRM_FOUND, CONFIRM_FOUND_SUCCESS, CONFIRM_FOUND_ERROR, CONFIRMED_FOUND_ITEM_ADDED
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -13,7 +14,9 @@ const INITIAL_STATE = {
   reportingLost: false,
   reportingLostError: '',
   findingItem: false,
-  findingItemError: ''
+  findingItemError: '',
+  confirmingFound: false,
+  confirmingFoundError: ''
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -71,7 +74,8 @@ export default (state = INITIAL_STATE, action) => {
     }
 
     case LOST_ITEM_ADDED:
-    case FOUND_ITEM_ADDED: {
+    case FOUND_ITEM_ADDED:
+    case CONFIRMED_FOUND_ITEM_ADDED: {
       return { ...state, userItems: payload };
     }
 
@@ -92,6 +96,26 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         findingItem: false,
         findingItemError: 'Error occurred while reporting found item.'
+      };
+    }
+
+    case CONFIRM_FOUND: {
+      return { ...state, confirmingFound: true };
+    }
+
+    case CONFIRM_FOUND_SUCCESS: {
+      return {
+        ...state,
+        confirmingFound: false,
+        confirmingFoundError: ''
+      };
+    }
+
+    case CONFIRM_FOUND_ERROR: {
+      return {
+        ...state,
+        confirmingFound: false,
+        confirmingFoundError: 'Error occurred while confirming found item.'
       };
     }
 

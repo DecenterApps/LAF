@@ -86,6 +86,13 @@
       .report-lost-button {
         font-size: 1.6rem;
       }
+
+      .finding-item-error {
+        color: $lightRed;
+        text-align: center;
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+      }
     }
   }
 }

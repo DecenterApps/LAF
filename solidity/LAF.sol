@@ -21,7 +21,7 @@ contract LAF {
     mapping (bytes => Item) items;
     mapping (address => User) users;
 
-    event PrizePaid(address founder, uint prize, address user);
+    event PrizePaid(bytes hash, address user);
     event ItemFound(bytes hash, address founder, address user, uint prize);
     event ItemLost(bytes hash, address user, bytes name, bytes location, bytes imageUrl, uint prize);
     event ItemRegistered(bytes hash, address user, bytes name, bytes email, bytes phone, bytes location, bytes imageUrl);
@@ -98,7 +98,7 @@ contract LAF {
         items[_hash].founder.transfer(amountToSend);
         items[_hash].founder = 0;
 
-        PrizePaid(msg.sender, amountToSend, items[_hash].owner);
+        PrizePaid(_hash, msg.sender);
 
         return true;
     }

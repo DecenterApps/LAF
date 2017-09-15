@@ -22,3 +22,9 @@ export const REPORT_FOUND = 'report_found';
 export const REPORT_FOUND_SUCCESS = 'report_found_success';
 export const REPORT_FOUND_ERROR = 'report_found_error';
 export const FOUND_ITEM_ADDED = 'found_item_added';
+
+// CONFIRM FOUND
+export const CONFIRM_FOUND = 'confirm_found';
+export const CONFIRM_FOUND_SUCCESS = 'confirm_found_success';
+export const CONFIRM_FOUND_ERROR = 'confirm_found_error';
+export const CONFIRMED_FOUND_ITEM_ADDED = 'confirm_found_item_added';

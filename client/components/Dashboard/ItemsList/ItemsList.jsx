@@ -6,12 +6,15 @@ import shortId from 'shortid';
 import BigBlockLoader from '../../Decorative/BigBlockLoader/BigBlockLoader';
 import { openModal, resetReportLostForm } from '../../../actions/modalsActions';
 import { REPORT_LOST_MODAL } from '../../Modals/modalTypes';
+import { confirmFoundItem } from '../../../actions/reportActions';
 
 import ils from './items-list.scss';
 import is from '../../../common-styles/icon-font.scss';
 import btn from '../../../common-styles/buttons.scss';
 
-const ItemsList = ({ userItems, loadingUserItems, emptyAddress, $openModal }) => (
+const ItemsList = ({
+  userItems, loadingUserItems, emptyAddress, $openModal, $confirmFoundItem, confirmingFoundError
+}) => (
   <div styleName={`ils.items-list-wrapper ${loadingUserItems || !userItems.length ? 'ils.center' : ''}`}>
 
     {/* LOADING ALL ITEMS */}
@@ -93,10 +96,15 @@ const ItemsList = ({ userItems, loadingUserItems, emptyAddress, $openModal }) =>
               }
 
               {
+                confirmingFoundError &&
+                <div styleName="ils.finding-item-error">{ confirmingFoundError }</div>
+              }
+
+              {
                 item.prize !== '0' && (item.founder !== emptyAddress) &&
                 <button
                   styleName="btn.btn ils.report-lost-button"
-                  onClick={() => {}}
+                  onClick={() => { $confirmFoundItem(item.hash); }}
                 >
                   Payout prize
                 </button>
@@ -113,17 +121,21 @@ ItemsList.propTypes = {
   userItems: PropTypes.array.isRequired,
   loadingUserItems: PropTypes.bool.isRequired,
   emptyAddress: PropTypes.string.isRequired,
-  $openModal: PropTypes.func.isRequired
+  $openModal: PropTypes.func.isRequired,
+  $confirmFoundItem: PropTypes.func.isRequired,
+  confirmingFoundError: PropTypes.string.isRequired
 };
 
 const mapStateToProps = (state) => ({
   userItems: state.items.userItems,
   loadingUserItems: state.items.loadingUserItems,
-  emptyAddress: state.items.emptyAddress
+  emptyAddress: state.items.emptyAddress,
+  confirmingFoundError: state.items.confirmingFoundError
 });
 
 const mapDispatchToProps = {
-  $openModal: openModal
+  $openModal: openModal,
+  $confirmFoundItem: confirmFoundItem
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ItemsList);

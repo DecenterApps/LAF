@@ -1,11 +1,12 @@
 /* eslint-disable */
 import { findIndex } from 'lodash';
 import {
-  USER_ITEM_ADDED, USER_ITEMS_ADDED, LOST_ITEM_ADDED, FOUND_ITEM_ADDED
+  USER_ITEM_ADDED, USER_ITEMS_ADDED, LOST_ITEM_ADDED, FOUND_ITEM_ADDED,
+  CONFIRMED_FOUND_ITEM_ADDED
 } from './types';
 import {
   registerItemEvent, getAccount, getNumberOfItems, getItemWithPosition,
-  itemProps, getItemProp, itemLostEvent, itemFoundEvent
+  itemProps, getItemProp, itemLostEvent, itemFoundEvent, prizePaidEvent
 } from '../modules/ethereumService';
 import { formatLargeNumber } from '../modules/utils';
 
@@ -130,5 +131,30 @@ export const itemFoundEventListener = () => (dispatch, getState) => {
     currentUserItems.splice(index, 1, item);
 
     dispatch({ type: FOUND_ITEM_ADDED, payload: currentUserItems })
+  });
+};
+
+export const prizePaidEventListener = () => (dispatch, getState) => {
+  prizePaidEvent((err, data) => {
+    console.log('PRIZE PAID OUT', data.args, getAccount());
+    if (err) return;
+    if (getAccount() !== data.args.user) return; // change to get from state
+
+    let currentUserItems = [...getState().items.userItems];
+
+    const args = data.args;
+
+    const hash = args.hash;
+    const index = findIndex(currentUserItems, { hash });
+    let item = currentUserItems[index];
+
+    item.prize = "0";
+    item.founder = getState().items.emptyAddress;
+
+    console.log('ITEM CONFIRMED FOUND FOUND', item);
+
+    currentUserItems.splice(index, 1, item);
+
+    dispatch({ type: CONFIRMED_FOUND_ITEM_ADDED, payload: currentUserItems })
   });
 };

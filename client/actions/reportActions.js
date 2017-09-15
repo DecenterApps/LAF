@@ -4,11 +4,12 @@ import {
   ADD_ITEM, ADD_ITEM_SUCCESS, ADD_ITEM_ERROR,
   REPORT_LOST, REPORT_LOST_SUCCESS, REPORT_LOST_ERROR,
   REPORT_FOUND, REPORT_FOUND_SUCCESS, REPORT_FOUND_ERROR,
+  CONFIRM_FOUND, CONFIRM_FOUND_SUCCESS, CONFIRM_FOUND_ERROR,
   TOGGLE_MODAL
 } from './types';
 
 import {
-  _addItem, _lostItem, _foundItem,
+  _addItem, _lostItem, _foundItem, _confirmFoundItem
 } from '../modules/ethereumService';
 
 export const addItem = (itemParam) => async (dispatch, getState) => {
@@ -68,5 +69,16 @@ export const reportFoundItem = (values) => async (dispatch) => {
     dispatch({ type: REPORT_FOUND_SUCCESS });
   } catch (err) {
     dispatch({ type: REPORT_FOUND_ERROR });
+  }
+};
+
+export const confirmFoundItem = (hash) => async (dispatch) => {
+  dispatch({ type: CONFIRM_FOUND });
+
+  try {
+    await _confirmFoundItem(hash);
+    dispatch({ type: CONFIRM_FOUND_SUCCESS });
+  } catch (err) {
+    dispatch({ type: CONFIRM_FOUND_ERROR });
   }
 };
