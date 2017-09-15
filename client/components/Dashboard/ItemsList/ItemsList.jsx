@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import shortId from 'shortid';
 import BigBlockLoader from '../../Decorative/BigBlockLoader/BigBlockLoader';
-import { openModal } from '../../../actions/modalsActions';
-import { resetReportLostForm } from '../../../actions/itemsActions';
+import { openModal, resetReportLostForm } from '../../../actions/modalsActions';
 import { REPORT_LOST_MODAL } from '../../Modals/modalTypes';
 
 import ils from './items-list.scss';
@@ -48,7 +47,7 @@ const ItemsList = ({ userItems, loadingUserItems, emptyAddress, $openModal }) =>
                   }
                   {
                     item.prize !== '0' && (item.founder !== emptyAddress) &&
-                    <span>CLAIMED FOUND</span>
+                    <span styleName="ils.claimed">CLAIMED FOUND</span>
                   }
                   {
                     item.prize === '0' && (item.founder !== emptyAddress) &&
@@ -90,6 +89,16 @@ const ItemsList = ({ userItems, loadingUserItems, emptyAddress, $openModal }) =>
                   }}
                 >
                   Report lost
+                </button>
+              }
+
+              {
+                item.prize !== '0' && (item.founder !== emptyAddress) &&
+                <button
+                  styleName="btn.btn ils.report-lost-button"
+                  onClick={() => {}}
+                >
+                  Payout prize
                 </button>
               }
             </div>

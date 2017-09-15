@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import InputComponent from '../InputComponent';
 import addItemFormValidator from './addItemFormValidator';
-import { addItem } from '../../../actions/itemsActions';
+import { addItem } from '../../../actions/reportActions';
 
 import formStyle from '../forms.scss';
 import btn from '../../../common-styles/buttons.scss';

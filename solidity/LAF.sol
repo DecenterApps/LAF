@@ -21,8 +21,8 @@ contract LAF {
     mapping (bytes => Item) items;
     mapping (address => User) users;
 
-    event PrizePaid(address founder, uint amount);
-    event ItemFound(bytes item, address founder, address owner);
+    event PrizePaid(address founder, uint prize, address user);
+    event ItemFound(bytes hash, address founder, address user, uint prize);
     event ItemLost(bytes hash, address user, bytes name, bytes location, bytes imageUrl, uint prize);
     event ItemRegistered(bytes hash, address user, bytes name, bytes email, bytes phone, bytes location, bytes imageUrl);
 
@@ -69,6 +69,7 @@ contract LAF {
     }
 
     function lostItem(bytes _hash) payable onlyRegisteredItem(_hash) returns (bool) {
+        // can't call it when it has a prize or founder
         items[_hash].prize = msg.value;
         ItemLost(_hash, items[_hash].owner, items[_hash].name, items[_hash].location, items[_hash].imageUrl, items[_hash].prize);
 
@@ -77,14 +78,14 @@ contract LAF {
 
     function foundItem(bytes _hash) onlyRegisteredItem(_hash) returns (bool) {
         require (items[_hash].founder == 0);
+        require(items[_hash].prize > 0);
 
         uint amountToSend = items[_hash].prize / 2;
         items[_hash].prize = items[_hash].prize - amountToSend;
         items[_hash].founder = msg.sender;
         msg.sender.transfer(amountToSend);
 
-        ItemFound(_hash, msg.sender, items[_hash].owner);
-        PrizePaid(msg.sender, amountToSend);
+        ItemFound(_hash, msg.sender, items[_hash].owner, items[_hash].prize);
 
         return true;
     }
@@ -97,7 +98,7 @@ contract LAF {
         items[_hash].founder.transfer(amountToSend);
         items[_hash].founder = 0;
 
-        PrizePaid(msg.sender, amountToSend);
+        PrizePaid(msg.sender, amountToSend, items[_hash].owner);
 
         return true;
     }

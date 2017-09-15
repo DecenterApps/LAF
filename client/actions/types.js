@@ -16,3 +16,9 @@ export const REPORT_LOST_SUCCESS = 'report_lost_success';
 export const REPORT_LOST_ERROR = 'report_lost_error';
 export const REPORT_LOST_RESET = 'report_lost_reset';
 export const LOST_ITEM_ADDED = 'lost_item_added';
+
+// FOUND ITEM
+export const REPORT_FOUND = 'report_found';
+export const REPORT_FOUND_SUCCESS = 'report_found_success';
+export const REPORT_FOUND_ERROR = 'report_found_error';
+export const FOUND_ITEM_ADDED = 'found_item_added';

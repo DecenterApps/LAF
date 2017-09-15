@@ -1,6 +1,7 @@
 import {
   ADD_ITEM, ADD_ITEM_SUCCESS, ADD_ITEM_ERROR, ADD_ITEM_RESET, USER_ITEM_ADDED, USER_ITEMS_ADDED,
-  REPORT_LOST, REPORT_LOST_SUCCESS, REPORT_LOST_ERROR, REPORT_LOST_RESET, LOST_ITEM_ADDED
+  REPORT_LOST, REPORT_LOST_SUCCESS, REPORT_LOST_ERROR, REPORT_LOST_RESET, LOST_ITEM_ADDED,
+  REPORT_FOUND, REPORT_FOUND_SUCCESS, REPORT_FOUND_ERROR, FOUND_ITEM_ADDED
 } from '../actions/types';
 
 const INITIAL_STATE = {
@@ -9,8 +10,10 @@ const INITIAL_STATE = {
   addingItem: false,
   addingItemError: '',
   userItems: [],
+  reportingLost: false,
   reportingLostError: '',
-  reportingLost: false
+  findingItem: false,
+  findingItemError: ''
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -67,8 +70,29 @@ export default (state = INITIAL_STATE, action) => {
       return { ...state, userItems: payload, loadingUserItems: false };
     }
 
-    case LOST_ITEM_ADDED: {
+    case LOST_ITEM_ADDED:
+    case FOUND_ITEM_ADDED: {
       return { ...state, userItems: payload };
+    }
+
+    case REPORT_FOUND: {
+      return { ...state, findingItem: true };
+    }
+
+    case REPORT_FOUND_SUCCESS: {
+      return {
+        ...state,
+        findingItem: false,
+        findingItemError: ''
+      };
+    }
+
+    case REPORT_FOUND_ERROR: {
+      return {
+        ...state,
+        findingItem: false,
+        findingItemError: 'Error occurred while reporting found item.'
+      };
     }
 
     default:

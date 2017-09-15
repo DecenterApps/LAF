@@ -4,19 +4,20 @@ import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import InputComponent from '../InputComponent';
-import reportLostFormValidator from './reportLostFormValidator';
-import { reportLostItem } from '../../../actions/reportActions';
+import { reportFoundItem } from '../../../actions/reportActions';
+import foundItemFormValidator from './foundItemFormValidator';
 
 import formStyle from '../forms.scss';
+import fif from './found-item-form.scss';
 import btn from '../../../common-styles/buttons.scss';
 
-let ReportLostForm = ({ handleSubmit, pristine, invalid, submitFormError, hash }) => (
-  <form onSubmit={handleSubmit} styleName="formStyle.form-wrapper">
+let FoundItemForm = ({ handleSubmit, pristine, invalid, submitFormError }) => (
+  <form onSubmit={handleSubmit} styleName="formStyle.form-wrapper fif.find-item-form-wrapper">
     <Field
-      name="prize"
+      name="hash"
       showErrorText
       component={InputComponent}
-      placeholder="Prize amount in ETH"
+      placeholder="Lost item hash"
       type="text"
       wrapperClassName={formStyle['form-item-wrapper']}
       inputClassName={formStyle['form-item']}
@@ -28,7 +29,7 @@ let ReportLostForm = ({ handleSubmit, pristine, invalid, submitFormError, hash }
     }
 
     <button
-      styleName="btn.btn btn.btn-md formStyle.submit-button"
+      styleName="btn.btn-orange btn.btn-md formStyle.submit-button"
       type="submit"
       disabled={pristine || invalid}
     >
@@ -37,27 +38,21 @@ let ReportLostForm = ({ handleSubmit, pristine, invalid, submitFormError, hash }
   </form>
 );
 
-ReportLostForm.defaultProps = {
-  hash: ''
-};
-
-ReportLostForm.propTypes = {
+FoundItemForm.propTypes = {
   submitFormError: PropTypes.string.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   pristine: PropTypes.bool.isRequired,
-  invalid: PropTypes.bool.isRequired,
-  hash: PropTypes.string
+  invalid: PropTypes.bool.isRequired
 };
 
-ReportLostForm = reduxForm({ form: 'reportLostForm', validate: reportLostFormValidator })(ReportLostForm);
+FoundItemForm = reduxForm({ form: 'foundItemForm', validate: foundItemFormValidator })(FoundItemForm);
 
 const mapStateToProps = (state) => ({
-  submitFormError: state.items.reportingLostError,
-  hash: state.modals.modalProps.hash
+  submitFormError: state.items.findingItemError
 });
 
 const mapDispatchToProps = {
-  onSubmit: reportLostItem
+  onSubmit: reportFoundItem
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReportLostForm);
+export default connect(mapStateToProps, mapDispatchToProps)(FoundItemForm);

@@ -109,6 +109,21 @@ export const _lostItem = (hash, prize) =>
       });
   });
 
+export const _foundItem = (hash) =>
+  new Promise((resolve, reject) => {
+    lafContract.foundItem(
+      hash,
+      (error, result) => {
+        if (error) {
+          return reject({
+            message: error,
+          });
+        }
+
+        return resolve(result);
+      });
+  });
+
 /* Events */
 
 export const registerItemEvent = async (callback) => {
@@ -142,6 +157,27 @@ export const itemLostEvent = async (callback) => {
   }
 
   lafContract.ItemLost({}, { fromBlock: latestBlock, toBlock: 'latest' })
+    .watch((error, event) => {
+      if (error) {
+        return callback(error, null);
+      }
+
+      return callback(null, event);
+    });
+
+  return true;
+};
+
+export const itemFoundEvent = async (callback) => {
+  let latestBlock = 0;
+
+  try {
+    latestBlock = await getBlockNumber();
+  } catch (err) {
+    return callback(err, null);
+  }
+
+  lafContract.ItemFound({}, { fromBlock: latestBlock, toBlock: 'latest' })
     .watch((error, event) => {
       if (error) {
         return callback(error, null);

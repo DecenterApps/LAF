@@ -1,52 +1,13 @@
 /* eslint-disable */
 import { findIndex } from 'lodash';
 import {
-  ADD_ITEM, ADD_ITEM_SUCCESS, ADD_ITEM_ERROR, ADD_ITEM_RESET, USER_ITEM_ADDED, USER_ITEMS_ADDED,
-  REPORT_LOST, REPORT_LOST_SUCCESS, REPORT_LOST_ERROR, REPORT_LOST_RESET, LOST_ITEM_ADDED
+  USER_ITEM_ADDED, USER_ITEMS_ADDED, LOST_ITEM_ADDED, FOUND_ITEM_ADDED
 } from './types';
 import {
-  _addItem, registerItemEvent, getAccount, getNumberOfItems, getItemWithPosition,
-  itemProps, getItemProp, _lostItem, itemLostEvent
+  registerItemEvent, getAccount, getNumberOfItems, getItemWithPosition,
+  itemProps, getItemProp, itemLostEvent, itemFoundEvent
 } from '../modules/ethereumService';
 import { formatLargeNumber } from '../modules/utils';
-import { closeModal } from './modalsActions';
-
-export const resetAddItemForm = () => (dispatch) => {
-  dispatch({ type: ADD_ITEM_RESET })
-};
-
-export const resetReportLostForm = () => (dispatch) => {
-  dispatch({ type: REPORT_LOST_RESET })
-};
-
-export const addItem = (itemParam) => async (dispatch) => {
-  dispatch({ type: ADD_ITEM });
-  let item = {};
-
-  for(const prop in itemParam) {
-    item[prop] = web3.toHex(new String(itemParam[prop]));
-  }
-
-  try {
-    await _addItem(item);
-    dispatch({ type: ADD_ITEM_SUCCESS });
-    dispatch(closeModal());
-  } catch (err) {
-    dispatch({ type: ADD_ITEM_ERROR });
-  }
-};
-
-export const reportLostItem = (values) => async (dispatch, getState) => {
-  dispatch({ type: REPORT_LOST });
-
-  try {
-    await _lostItem(getState().modals.modalProps.hash, values.prize);
-    dispatch({ type: REPORT_LOST_SUCCESS });
-    dispatch(closeModal());
-  } catch (err) {
-    dispatch({ type: REPORT_LOST_ERROR });
-  }
-};
 
 export const registerItemEventListener = () => (dispatch, getState) => {
   registerItemEvent((err, data) => {
@@ -83,6 +44,8 @@ export const itemLostEventListener = () => (dispatch, getState) => {
   itemLostEvent((err, data) => {
     if (err) return;
     if (getAccount() !== data.args.user) return; // change to get from state
+
+    console.log('ITEM LOST', data.args);
 
     let currentUserItems = [...getState().items.userItems];
 
@@ -139,4 +102,33 @@ export const getAllUserItems = () => async (dispatch) => {
     // handle this
     return;
   }
+};
+
+export const itemFoundEventListener = () => (dispatch, getState) => {
+  itemFoundEvent((err, data) => {
+    // ADD WAIT FOR USER ITEMS TO LOAD LISTENER
+    // ADD ADD TO USER FOUND ITEMS
+    console.log('ITEM FOUND', data.args, getAccount());
+    if (err) return;
+    if (getAccount() !== data.args.user) return; // change to get from state
+
+    let currentUserItems = [...getState().items.userItems];
+
+    const args = data.args;
+
+    const prize =  formatLargeNumber(parseFloat(web3.fromWei(data.args.prize.toString())));
+    const hash = args.hash;
+    const index = findIndex(currentUserItems, { hash });
+    const founder = args.founder;
+    let item = currentUserItems[index];
+
+    item.prize = prize;
+    item.founder = founder;
+
+    console.log('ITEM FOUND', item);
+
+    currentUserItems.splice(index, 1, item);
+
+    dispatch({ type: FOUND_ITEM_ADDED, payload: currentUserItems })
+  });
 };

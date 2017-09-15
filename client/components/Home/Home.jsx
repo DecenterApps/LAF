@@ -1,10 +1,11 @@
 import React from 'react';
+import FoundItemSection from './FoundItemSection/FoundItemSection';
 
 import './home.scss';
 
 const Home = () => (
   <div styleName="home">
-    There are no lost items yet.
+    <FoundItemSection />
   </div>
 );
 

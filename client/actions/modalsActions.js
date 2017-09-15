@@ -1,5 +1,5 @@
 import modalTypes from '../components/Modals/modalTypes';
-import { TOGGLE_MODAL } from './types';
+import { TOGGLE_MODAL, ADD_ITEM_RESET, REPORT_LOST_RESET } from './types';
 
 const checkModalType = (modalType) => {
   if (!Object.prototype.hasOwnProperty.call(modalTypes, modalType)) {
@@ -7,7 +7,7 @@ const checkModalType = (modalType) => {
   }
 };
 
-const toggleModal = (modalType, modalProps, action, onCloseFunc) => (dispatch) => {
+export const toggleModal = (modalType, modalProps, action, onCloseFunc) => (dispatch) => {
   dispatch({
     type: TOGGLE_MODAL,
     payload: { action, modalType, modalProps, onCloseFunc }
@@ -27,3 +27,10 @@ export const closeModal = () => (dispatch, getState) => {
   dispatch(toggleModal('', {}, false));
 };
 
+export const resetAddItemForm = () => (dispatch) => {
+  dispatch({ type: ADD_ITEM_RESET });
+};
+
+export const resetReportLostForm = () => (dispatch) => {
+  dispatch({ type: REPORT_LOST_RESET });
+};

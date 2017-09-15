@@ -2,15 +2,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { openModal } from '../../../actions/modalsActions';
-import { resetAddItemForm } from '../../../actions/itemsActions';
+import { openModal, resetAddItemForm } from '../../../actions/modalsActions';
 import { ADD_ITEM_MODAL } from '../../Modals/modalTypes';
 
-import addItem from './add-item.scss';
+import ais from './add-item.scss';
 import btn from '../../../common-styles/buttons.scss';
 
 const AddItem = ({ $openModal, loadingUserItems }) => (
-  <div styleName="addItem.add-item-wrapper">
+  <div styleName="ais.add-item-wrapper">
     <button
       styleName="btn.btn-orange btn.btn-lg"
       disabled={loadingUserItems}
