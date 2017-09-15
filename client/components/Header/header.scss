@@ -9,4 +9,10 @@
   align-items: center;
   justify-content: space-between;
   color: $light-blue;
+
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
